@@ -12,6 +12,7 @@ class NeuralNetwork(nn.Module):
             # nn.Linear(512, 10),
         )
 
+# Do not call directly !!!!!!
     def forward(self, x):
-        prediction = self.linear_relu_stack(x)
+        prediction = self.linear_regression(x)
         return prediction
