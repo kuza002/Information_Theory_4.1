@@ -8,14 +8,17 @@ from torch.utils.data import Dataset
 
 class TitanicDB(Dataset):
     def __init__(self, path):
-        self.labels = pd.read_csv(path)[["0"]].to_numpy()
-        self.labels = np.array([i[0] for i in self.labels])
+        # Initialize data, download, etc.
+        # read with numpy or pandas
+        xy = np.loadtxt(path, delimiter=',', dtype=np.float32, skiprows=1)
+        self.n_samples = xy.shape[0]
 
-        self.parameters = pd.read_csv(path).drop(['0'], axis=1).to_numpy()
-        self.parameters = torch.tensor(self.parameters)
+        # here the first column is the class label, the rest are the features
+        self.x_data = torch.from_numpy(xy[:, 1:])  # size [n_samples, n_features]
+        self.y_data = torch.from_numpy(xy[:, [0]])  # size [n_samples, 1]
 
     def __len__(self):
-        return len(self.labels)
+        return self.n_samples
 
     def __getitem__(self, idx):
-        return self.parameters[idx], self.labels[idx]
+        return self.x_data[idx], self.y_data[idx]
